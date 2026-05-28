@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>To-Do List | Task Manager</title>
-    <!-- Font Awesome 6 (free icons for theme/account and general UI) -->
+    <title>To-Do List | Persistent & Smart Storage</title>
+    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* ----- GLOBAL RESET & BASE (DARK MODE DEFAULT) ----- */
         * {
             margin: 0;
             padding: 0;
@@ -21,16 +22,16 @@
             align-items: center;
             min-height: 100vh;
             padding: 1.5rem;
+            transition: background-color 0.25s ease;
         }
 
-        /* main app container */
         .app-container {
             max-width: 700px;
             width: 100%;
             margin: 0 auto;
         }
 
-        /* todo header card */
+        /* ----- HEADER CARD ----- */
         .todo-card {
             background-color: #10131A;
             border-radius: 24px;
@@ -42,6 +43,7 @@
             gap: 12px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background 0.2s, box-shadow 0.2s;
         }
 
         .todo-card .header-icon {
@@ -80,7 +82,7 @@
             transform: scale(1.05);
         }
 
-        /* main tasks panel */
+        /* ----- MAIN TASK PANEL ----- */
         .todo-list {
             background-color: #10131A;
             border-radius: 28px;
@@ -106,7 +108,7 @@
             color: #4CAF50;
         }
 
-        /* input area with date */
+        /* Input + date area */
         .input-area {
             display: flex;
             flex-wrap: wrap;
@@ -178,7 +180,7 @@
             transform: scale(0.97);
         }
 
-        /* filter buttons */
+        /* Filter buttons */
         .filter-area {
             display: flex;
             flex-wrap: wrap;
@@ -216,7 +218,7 @@
             color: white;
         }
 
-        /* task list */
+        /* Task list items */
         .task-list-container {
             margin-top: 8px;
         }
@@ -306,7 +308,7 @@
             transform: scale(1.05);
         }
 
-        /* progress footer */
+        /* Progress footer + clear completed button */
         .progress-footer {
             margin-top: 28px;
             padding-top: 14px;
@@ -314,8 +316,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.8rem;
-            color: #bdc1d4;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
         .progress-text {
@@ -323,11 +325,42 @@
             padding: 6px 14px;
             border-radius: 50px;
             font-weight: 500;
+            font-size: 0.8rem;
         }
 
-        .reset-note {
+        .footer-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .clear-completed-btn {
+            background: #2C2F3A;
+            border: none;
+            color: #FFB4A2;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .clear-completed-btn:hover {
+            background: #ff4d4d30;
+            color: #ff8a7a;
+            transform: scale(0.96);
+        }
+
+        .storage-note {
             font-size: 0.7rem;
-            opacity: 0.6;
+            opacity: 0.65;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         /* empty state */
@@ -345,7 +378,56 @@
             opacity: 0.5;
         }
 
-        /* responsive */
+        /* ----- LIGHT MODE OVERRIDES (PERSISTENT) ----- */
+        body.light-mode {
+            background-color: #EFF2F7;
+        }
+        body.light-mode .todo-card,
+        body.light-mode .todo-list {
+            background-color: #FFFFFF;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid #E9ECF0;
+            color: #1F2329;
+        }
+        body.light-mode .todo-card h1 {
+            background: linear-gradient(135deg, #1F2A3A 0%, #4A5568 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+        }
+        body.light-mode .task-input-wrapper input,
+        body.light-mode .date-input-wrapper input,
+        body.light-mode .filter-btn,
+        body.light-mode .task-item {
+            background-color: #F8F9FC;
+            color: #1E293B;
+            border-color: #E2E8F0;
+        }
+        body.light-mode .task-input-wrapper input:focus {
+            border-color: #4CAF50;
+            background-color: #FFFFFF;
+        }
+        body.light-mode .filter-btn:hover:not(.active) {
+            background-color: #E9EEF5;
+            color: #0F172A;
+        }
+        body.light-mode .task-date {
+            color: #5B6E8C;
+        }
+        body.light-mode .progress-text {
+            background: #F1F5F9;
+            color: #1E293B;
+        }
+        body.light-mode .clear-completed-btn {
+            background: #EFF3F8;
+            color: #c2410c;
+        }
+        body.light-mode .storage-note {
+            color: #4b5563;
+        }
+        body.light-mode .date-input-wrapper input::-webkit-calendar-picker-indicator {
+            filter: invert(0.2);
+        }
+
         @media (max-width: 550px) {
             .todo-list {
                 padding: 1.2rem;
@@ -366,18 +448,22 @@
             .delete-task-btn {
                 margin-left: auto;
             }
+            .progress-footer {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
     </style>
 </head>
 <body>
 <div class="app-container">
-    <!-- Header card: title + theme + account icons (purely visual) -->
+    <!-- Header -->
     <div class="todo-card">
         <i class="fas fa-check-circle header-icon"></i>
         <h1>To Do List</h1>
         <div class="right-icons">
-            <i class="fas fa-moon" id="themeIcon" title="Theme (demo)"></i>
-            <i class="fas fa-user-circle" id="accountIcon" title="Account"></i>
+            <i class="fas fa-moon" id="themeIcon" title="Switch theme (saved)"></i>
+            <i class="fas fa-database" id="storageInfoIcon" title="Permanent local storage"></i>
         </div>
     </div>
 
@@ -385,10 +471,10 @@
     <div class="todo-list">
         <h2><i class="fas fa-list-check"></i> My Tasks</h2>
 
-        <!-- Add new task with date picker -->
+        <!-- Add new task area -->
         <div class="input-area">
             <div class="task-input-wrapper">
-                <input type="text" id="newTaskInput" placeholder="Add a new task..." autocomplete="off">
+                <input type="text" id="newTaskInput" placeholder="Write a task... (e.g., 'Read book')" autocomplete="off">
             </div>
             <div class="date-input-wrapper">
                 <input type="date" id="newTaskDate" value="">
@@ -396,83 +482,138 @@
             <button id="addTaskBtn"><i class="fas fa-plus"></i> Add Task</button>
         </div>
 
-        <!-- Filter section with dynamic counters -->
+        <!-- Filter buttons -->
         <div class="filter-area" id="filterArea">
             <button class="filter-btn active" data-filter="all"><i class="fas fa-tasks"></i> All <span id="allCount">(0)</span></button>
             <button class="filter-btn" data-filter="pending"><i class="fas fa-hourglass-half"></i> Pending <span id="pendingCount">(0)</span></button>
             <button class="filter-btn" data-filter="completed"><i class="fas fa-check-circle"></i> Completed <span id="completedCount">(0)</span></button>
         </div>
 
-        <!-- Task list dynamic container -->
+        <!-- Task list container -->
         <div class="task-list-container">
             <ul class="task-items" id="taskListUl">
-                <!-- dynamic tasks injected here -->
+                <!-- dynamic tasks injected -->
             </ul>
         </div>
 
-        <!-- Progress footer: shows x of y completed -->
+        <!-- Progress footer with clear completed & storage info -->
         <div class="progress-footer">
-            <div class="progress-text" id="progressText">0 of 0 tasks completed</div>
-            <div class="reset-note"><i class="far fa-save"></i> sync ready</div>
+            <div class="progress-text" id="progressText">
+                <i class="fas fa-chart-simple"></i> 0 of 0 completed
+            </div>
+            <div class="footer-actions">
+                <button id="clearCompletedBtn" class="clear-completed-btn" title="Remove all completed tasks permanently">
+                    <i class="fas fa-eraser"></i> Clear completed
+                </button>
+                <div class="storage-note" id="storageNote">
+                    <i class="fas fa-cloud-upload-alt"></i> auto-saved
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    // ---------- DATA MODEL ----------
-    let tasks = [
-        {
-            id: 1001,
-            text: "Buy groceries",
-            completed: false,
-            dueDateISO: "2024-05-25"
-        },
-        {
-            id: 1002,
-            text: "Finish project report",
-            completed: false,
-            dueDateISO: "2024-05-26"
-        },
-        {
-            id: 1003,
-            text: "Call John",
-            completed: false,
-            dueDateISO: "2024-05-27"
-        },
-        {
-            id: 1004,
-            text: "Morning workout",
-            completed: true,
-            dueDateISO: "2024-05-24"
-        }
-    ];
+    // ======================= PERSISTENT LOCAL STORAGE (LONG TERM) =======================
+    // 1. Load tasks or initialize default dataset (with validation)
+    // 2. Save on every modification (add, toggle, delete, clear completed)
+    // 3. Theme persistence + graceful error handling (quota, parse errors)
+    
+    const STORAGE_TASKS_KEY = "smartTodo_tasks_v2";
+    const STORAGE_THEME_KEY = "smartTodo_theme";
 
+    // Helper: load tasks with fallback & data integrity check
+    function loadTasksFromStorage() {
+        let rawTasks = localStorage.getItem(STORAGE_TASKS_KEY);
+        let parsedTasks = null;
+        if (rawTasks) {
+            try {
+                parsedTasks = JSON.parse(rawTasks);
+            } catch (e) {
+                console.warn("Tasks JSON parse failed, using defaults");
+                parsedTasks = null;
+            }
+        }
+        
+        // Default initial tasks (matches image requirement: 1 completed + pending with dates)
+        const defaultTasks = [
+            { id: 1001, text: "Buy groceries", completed: false, dueDateISO: "2024-05-25" },
+            { id: 1002, text: "Finish project report", completed: false, dueDateISO: "2024-05-26" },
+            { id: 1003, text: "Call John", completed: false, dueDateISO: "2024-05-27" },
+            { id: 1004, text: "Morning workout", completed: true, dueDateISO: "2024-05-24" }
+        ];
+        
+        let tasksArray = (parsedTasks && Array.isArray(parsedTasks)) ? parsedTasks : defaultTasks;
+        
+        // Data integrity: ensure each task has required fields and correct types
+        tasksArray = tasksArray.map(task => {
+            return {
+                id: (typeof task.id === 'number' && !isNaN(task.id)) ? task.id : Date.now() + Math.random() * 10000,
+                text: task.text ? String(task.text).trim() : "Untitled task",
+                completed: task.completed === true,
+                dueDateISO: task.dueDateISO && /^\d{4}-\d{2}-\d{2}$/.test(task.dueDateISO) ? task.dueDateISO : new Date().toISOString().slice(0,10)
+            };
+        }).filter(task => task.text !== ""); // remove empty named tasks
+        
+        if (tasksArray.length === 0 && (!parsedTasks || parsedTasks.length === 0)) {
+            tasksArray = defaultTasks;
+        }
+        return tasksArray;
+    }
+
+    let tasks = loadTasksFromStorage();
     let currentFilter = "all";   // 'all', 'pending', 'completed'
 
-    // Helper: format ISO date to "Month DD, YYYY"
+    // Save tasks to localStorage with error simulation (quota guard)
+    function persistTasks() {
+        try {
+            localStorage.setItem(STORAGE_TASKS_KEY, JSON.stringify(tasks));
+            updateStorageNote(true);
+        } catch (e) {
+            console.error("Storage quota exceeded or error:", e);
+            updateStorageNote(false);
+        }
+    }
+
+    function updateStorageNote(success = true) {
+        const noteSpan = document.getElementById('storageNote');
+        if (noteSpan) {
+            if (success) {
+                noteSpan.innerHTML = `<i class="fas fa-check-circle"></i> saved locally`;
+                setTimeout(() => {
+                    if (noteSpan.innerHTML.includes("saved locally"))
+                        noteSpan.innerHTML = `<i class="fas fa-cloud-upload-alt"></i> auto-saved`;
+                }, 1800);
+            } else {
+                noteSpan.innerHTML = `<i class="fas fa-exclamation-triangle"></i> storage error`;
+                setTimeout(() => {
+                    if (noteSpan.innerHTML.includes("error"))
+                        noteSpan.innerHTML = `<i class="fas fa-cloud-upload-alt"></i> auto-saved`;
+                }, 2500);
+            }
+        }
+    }
+
+    // Helper: format date to "Month DD, YYYY"
     function formatDateToReadable(isoString) {
         if (!isoString) return "No date";
         const date = new Date(isoString);
-        if (isNaN(date.getTime())) return "Invalid date";
+        if (isNaN(date.getTime())) return "Set date";
         return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
     }
 
-    // update counters on filter buttons (All, Pending, Completed counts)
+    // update all counters (All, Pending, Completed)
     function updateCountersUI() {
         const total = tasks.length;
         const pendingTasks = tasks.filter(t => !t.completed).length;
         const completedTasks = tasks.filter(t => t.completed).length;
-
         document.getElementById('allCount').innerText = `(${total})`;
         document.getElementById('pendingCount').innerText = `(${pendingTasks})`;
         document.getElementById('completedCount').innerText = `(${completedTasks})`;
-
-        // update progress footer: "X of Y tasks completed"
         const progressSpan = document.getElementById('progressText');
-        progressSpan.innerHTML = `<i class="fas fa-chart-simple" style="margin-right: 6px;"></i> ${completedTasks} of ${total} task${total !== 1 ? 's' : ''} completed`;
+        progressSpan.innerHTML = `<i class="fas fa-chart-simple"></i> ${completedTasks} of ${total} task${total !== 1 ? 's' : ''} completed`;
     }
 
-    // get filtered tasks based on currentFilter
     function getFilteredTasks() {
         if (currentFilter === 'all') return [...tasks];
         if (currentFilter === 'pending') return tasks.filter(t => !t.completed);
@@ -480,46 +621,6 @@
         return tasks;
     }
 
-    // render the task list entirely (based on current filter)
-    function renderTaskList() {
-        const filtered = getFilteredTasks();
-        const taskContainer = document.getElementById('taskListUl');
-        
-        if (filtered.length === 0) {
-            taskContainer.innerHTML = `
-                <div class="empty-state">
-                    <i class="far fa-smile-wink"></i>
-                    <p>No tasks here ✨<br>Add a new task or switch filter</p>
-                </div>
-            `;
-            return;
-        }
-
-        // build each task item dynamically
-        let listHtml = '';
-        filtered.forEach(task => {
-            const formattedDate = formatDateToReadable(task.dueDateISO);
-            const checkedAttr = task.completed ? 'checked' : '';
-            const completedClass = task.completed ? 'completed-task' : '';
-            
-            listHtml += `
-                <li class="task-item" data-task-id="${task.id}">
-                    <input type="checkbox" class="task-check" ${checkedAttr} data-id="${task.id}">
-                    <div class="task-info ${completedClass}">
-                        <span class="task-text">${escapeHtml(task.text)}</span>
-                        <div class="task-date">
-                            <i class="far fa-calendar-alt"></i> ${formattedDate}
-                        </div>
-                    </div>
-                    <button class="delete-task-btn" data-id="${task.id}" title="Delete task"><i class="fas fa-trash-alt"></i></button>
-                </li>
-            `;
-        });
-        
-        taskContainer.innerHTML = listHtml;
-    }
-
-    // simple escape to prevent XSS
     function escapeHtml(str) {
         if (!str) return '';
         return str.replace(/[&<>]/g, function(m) {
@@ -527,38 +628,57 @@
             if (m === '<') return '&lt;';
             if (m === '>') return '&gt;';
             return m;
-        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-            return c;
         });
     }
 
-    // full refresh: update counters, render filtered list, highlight active filter button
+    function renderTaskList() {
+        const filtered = getFilteredTasks();
+        const taskContainer = document.getElementById('taskListUl');
+        if (filtered.length === 0) {
+            taskContainer.innerHTML = `<div class="empty-state"><i class="far fa-smile-wink"></i><p>✨ No tasks here<br>Add a new task or switch filter ✨</p></div>`;
+            return;
+        }
+        let listHtml = '';
+        filtered.forEach(task => {
+            const formattedDate = formatDateToReadable(task.dueDateISO);
+            const checkedAttr = task.completed ? 'checked' : '';
+            const completedClass = task.completed ? 'completed-task' : '';
+            listHtml += `
+                <li class="task-item" data-task-id="${task.id}">
+                    <input type="checkbox" class="task-check" ${checkedAttr} data-id="${task.id}">
+                    <div class="task-info ${completedClass}">
+                        <span class="task-text">${escapeHtml(task.text)}</span>
+                        <div class="task-date">
+                            <i class="far fa-calendar-alt"></i> ${escapeHtml(formattedDate)}
+                        </div>
+                    </div>
+                    <button class="delete-task-btn" data-id="${task.id}" title="Delete permanently"><i class="fas fa-trash-alt"></i></button>
+                </li>
+            `;
+        });
+        taskContainer.innerHTML = listHtml;
+    }
+
+    function highlightActiveFilter() {
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            const filterValue = btn.getAttribute('data-filter');
+            if (filterValue === currentFilter) btn.classList.add('active');
+            else btn.classList.remove('active');
+        });
+    }
+
     function refreshUI() {
         updateCountersUI();
         renderTaskList();
         highlightActiveFilter();
     }
 
-    // highlight filter button based on currentFilter variable
-    function highlightActiveFilter() {
-        const btns = document.querySelectorAll('.filter-btn');
-        btns.forEach(btn => {
-            const filterValue = btn.getAttribute('data-filter');
-            if (filterValue === currentFilter) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
-        });
-    }
-
-    // add new task logic
+    // Add new task with date validation
     function addNewTask() {
         const taskInput = document.getElementById('newTaskInput');
         const taskDateInput = document.getElementById('newTaskDate');
-        const taskText = taskInput.value.trim();
+        let taskText = taskInput.value.trim();
         if (taskText === "") {
-            // subtle visual feedback
             taskInput.style.border = "1px solid #ff6b6b";
             setTimeout(() => { taskInput.style.border = ""; }, 800);
             return;
@@ -566,15 +686,13 @@
         
         let dueDateISO = taskDateInput.value;
         if (!dueDateISO) {
-            // if no date selected, use today's date
             const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            dueDateISO = `${year}-${month}-${day}`;
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            dueDateISO = `${yyyy}-${mm}-${dd}`;
         }
         
-        // create new task object (unique ID)
         const newId = Date.now() + Math.floor(Math.random() * 10000);
         const newTask = {
             id: newId,
@@ -582,71 +700,78 @@
             completed: false,
             dueDateISO: dueDateISO
         };
-        
         tasks.push(newTask);
-        
-        // clear inputs
+        persistTasks();     // immediate save
         taskInput.value = "";
         taskDateInput.value = "";
-        
-        // after adding, keep current filter (but if we are on 'completed' filter, new task is pending, might disappear, but user expects stays)
-        // just refresh UI and ensure filter consistency
         refreshUI();
         
-        // small success pulse effect on add button
         const addBtn = document.getElementById('addTaskBtn');
         addBtn.style.transform = 'scale(0.96)';
         setTimeout(() => { addBtn.style.transform = ''; }, 150);
     }
     
-    // toggle task completion
     function toggleTaskCompletion(taskId) {
         const task = tasks.find(t => t.id === taskId);
         if (task) {
             task.completed = !task.completed;
+            persistTasks();
             refreshUI();
         }
     }
     
-    // delete task by id
     function deleteTaskById(taskId) {
         tasks = tasks.filter(t => t.id !== taskId);
+        persistTasks();
         refreshUI();
     }
     
-    // Event delegation for checkboxes and delete buttons (on ul container)
+    // Clear all completed tasks (permanent)
+    function clearCompletedTasks() {
+        const hadCompleted = tasks.some(t => t.completed === true);
+        if (!hadCompleted) {
+            const note = document.getElementById('storageNote');
+            if (note) {
+                note.innerHTML = `<i class="fas fa-info-circle"></i> no completed tasks`;
+                setTimeout(() => {
+                    if (note.innerHTML.includes("no completed")) note.innerHTML = `<i class="fas fa-cloud-upload-alt"></i> auto-saved`;
+                }, 1500);
+            }
+            return;
+        }
+        tasks = tasks.filter(t => !t.completed);
+        persistTasks();
+        refreshUI();
+        // visual feedback
+        const clearBtn = document.getElementById('clearCompletedBtn');
+        clearBtn.style.transform = 'scale(0.95)';
+        setTimeout(() => { clearBtn.style.transform = ''; }, 150);
+        updateStorageNote(true);
+    }
+    
+    // Event delegation for dynamic tasks
     function attachGlobalEvents() {
         const taskListContainer = document.getElementById('taskListUl');
-        
-        // listen for clicks on checkbox or delete button (event delegation)
         taskListContainer.addEventListener('change', (e) => {
             if (e.target && e.target.classList.contains('task-check')) {
                 const taskId = parseInt(e.target.getAttribute('data-id'));
-                if (!isNaN(taskId)) {
-                    toggleTaskCompletion(taskId);
-                }
+                if (!isNaN(taskId)) toggleTaskCompletion(taskId);
                 e.stopPropagation();
             }
         });
-        
         taskListContainer.addEventListener('click', (e) => {
-            // delete button click
             const deleteBtn = e.target.closest('.delete-task-btn');
             if (deleteBtn) {
                 const taskId = parseInt(deleteBtn.getAttribute('data-id'));
-                if (!isNaN(taskId)) {
-                    deleteTaskById(taskId);
-                }
+                if (!isNaN(taskId)) deleteTaskById(taskId);
                 e.preventDefault();
             }
         });
     }
     
-    // filter buttons listeners
     function initFilterButtons() {
-        const filterBtns = document.querySelectorAll('.filter-btn');
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
                 const filterValue = btn.getAttribute('data-filter');
                 if (filterValue) {
                     currentFilter = filterValue;
@@ -656,89 +781,83 @@
         });
     }
     
-    // additional demo: theme / account icons (just visual interaction, no deep logic)
-    function initVisualIcons() {
+    // Theme: persistent with local storage and smooth toggle
+    function initThemeSystem() {
         const themeIcon = document.getElementById('themeIcon');
-        const accountIcon = document.getElementById('accountIcon');
-        // fun tooltip style feedback
+        const savedTheme = localStorage.getItem(STORAGE_THEME_KEY);
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        } else {
+            document.body.classList.remove('light-mode');
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+        }
+        
         themeIcon.addEventListener('click', () => {
-            // just visual hint: simulate theme switch (no big change, but modern feel)
-            document.body.style.transition = "background 0.2s";
-            const currentBg = getComputedStyle(document.body).backgroundColor;
-            if (currentBg === 'rgb(12, 13, 18)') {
-                document.body.style.backgroundColor = '#1a1e2a';
-                setTimeout(() => { document.body.style.backgroundColor = '#0C0D12'; }, 400);
+            const isLight = document.body.classList.toggle('light-mode');
+            if (isLight) {
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+                localStorage.setItem(STORAGE_THEME_KEY, 'light');
             } else {
-                document.body.style.backgroundColor = '#0C0D12';
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+                localStorage.setItem(STORAGE_THEME_KEY, 'dark');
             }
-            themeIcon.style.transform = 'rotate(15deg)';
-            setTimeout(() => { themeIcon.style.transform = ''; }, 200);
+            themeIcon.style.transform = 'rotate(20deg)';
+            setTimeout(() => { if(themeIcon) themeIcon.style.transform = ''; }, 200);
         });
-        accountIcon.addEventListener('click', () => {
-            alert("✨ Account demo: You're in offline mode. Tasks are saved in session.");
-        });
-    }
-
-    // set default today's date in date picker as placeholder (optional)
-    function setDefaultDatePlaceholder() {
-        const dateInput = document.getElementById('newTaskDate');
-        if (!dateInput.value) {
-            // don't force a value, but we can display placeholder in UI? Not needed, but we set minimal
-            // leave empty - user can pick, default assignment in add uses today if empty.
+        
+        // extra storage info icon hint
+        const storageIcon = document.getElementById('storageInfoIcon');
+        if (storageIcon) {
+            storageIcon.addEventListener('click', () => {
+                alert("✓ All tasks are automatically saved in your browser's local storage.\n✓ Data persists even after closing the browser.\n✓ 'Clear completed' removes finished tasks permanently.");
+            });
         }
     }
     
-    // load initial state and ensure due dates formatting, also verify tasks integrity
-    function bootstrapInitialTasks() {
-        // ensure all tasks have dueDateISO, just in case
-        tasks = tasks.map(task => {
-            if (!task.dueDateISO) {
-                task.dueDateISO = "2024-05-30";
-            }
-            return task;
-        });
-        refreshUI();
-    }
-    
-    // add new task button event listener
     function bindAddTaskButton() {
         const addBtn = document.getElementById('addTaskBtn');
         const taskInput = document.getElementById('newTaskInput');
         addBtn.addEventListener('click', addNewTask);
-        // allow pressing Enter in input field to add
-        taskInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                addNewTask();
-            }
-        });
+        taskInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') { e.preventDefault(); addNewTask(); } });
         const dateInput = document.getElementById('newTaskDate');
-        dateInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                addNewTask();
-            }
-        });
+        dateInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') { e.preventDefault(); addNewTask(); } });
     }
     
-    // reorder? not needed, maintain insertion order (newest appended)
-    // but we keep as is for natural order: keep insertion order with initial tasks then added tasks at bottom (via push)
-    // to have added tasks at bottom we keep push & no sorting, matches typical todo.
+    // clear completed button handler
+    function initClearCompleted() {
+        const clearBtn = document.getElementById('clearCompletedBtn');
+        if (clearBtn) clearBtn.addEventListener('click', clearCompletedTasks);
+    }
     
-    // one additional: update counts after any modifications done by refreshUI
-    // ensure that when tasks change, filter remains consistent.
+    // re-validate integrity each startup but save after integrity fix
+    function finalDataIntegrityAndSave() {
+        // ensure no duplicate IDs, fix if any (rare)
+        const ids = new Set();
+        tasks = tasks.filter(task => {
+            if (ids.has(task.id)) {
+                task.id = Date.now() + Math.random() * 10000;
+            }
+            ids.add(task.id);
+            return true;
+        });
+        persistTasks();  // write clean version back to storage
+        refreshUI();
+    }
     
-    // final initialization
     function initApp() {
         bindAddTaskButton();
         initFilterButtons();
         attachGlobalEvents();
-        initVisualIcons();
-        setDefaultDatePlaceholder();
-        bootstrapInitialTasks();   // sets refresh & counters, and renders tasks
+        initThemeSystem();
+        initClearCompleted();
+        finalDataIntegrityAndSave();   // ensures stored version matches structure
+        // small visual: update note on success
+        updateStorageNote(true);
     }
     
-    // start everything when DOM ready
     document.addEventListener('DOMContentLoaded', initApp);
 </script>
 </body>
